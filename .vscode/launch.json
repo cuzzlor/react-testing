@@ -5,12 +5,12 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "test",
+      "type": "node-terminal",
+      "name": "debug tests",
       "request": "launch",
-      "runtimeArgs": ["run-script", "test"],
-      "runtimeExecutable": "npm",
-      "skipFiles": ["<node_internals>/**"],
-      "type": "pwa-node"
+      "command": "npm test",
+      "cwd": "${workspaceFolder}",
+      "skipFiles": ["<node_internals>/**"]
     },
     {
       "type": "chrome",

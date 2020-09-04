@@ -20,5 +20,21 @@ const onSubmit = (data: NameFormData) => alert('data: ' + JSON.stringify(data));
 export const Empty = Template.bind({});
 Empty.args = { onSubmit };
 
+export const FilledPartial = Template.bind({});
+FilledPartial.args = { onSubmit, firstName: 'Mary', lastName: 'McDonald' };
+
 export const Filled = Template.bind({});
-Filled.args = { onSubmit, firstName: 'John', lastName: 'Smith' };
+Filled.args = {
+  onSubmit,
+  firstName: 'Kid',
+  lastName: 'Junior',
+  jokePreference: 'random',
+};
+
+export const FilledDad = Template.bind({});
+FilledDad.args = {
+  onSubmit,
+  firstName: 'Old',
+  lastName: 'McDonald',
+  jokePreference: 'dad',
+};
