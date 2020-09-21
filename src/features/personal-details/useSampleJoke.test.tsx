@@ -58,10 +58,10 @@ describe('useSampleJoke', () => {
     expect(result.current.sampleJoke).toEqual(randomJoke);
 
     act(() => {
-      result.current.setJokePreference(undefined);
+      result.current.setJokePreference(null);
     });
 
-    expect(result.current.jokePreference).toEqual(undefined);
-    expect(result.current.sampleJoke).toEqual(undefined);
+    expect(result.current.jokePreference).toEqual(null);
+    expect(result.current.sampleJoke).toEqual(null);
   });
 });

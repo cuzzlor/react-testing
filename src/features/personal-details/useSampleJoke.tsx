@@ -12,14 +12,14 @@ const fetchDadJoke = () =>
   }).then((response) => response.text());
 
 export const useSampleJoke = () => {
-  const [jokePreference, setJokePreference] = useState<JokePreference | undefined>(undefined);
-  const [sampleJoke, setSampleJoke] = useState<string | undefined>(undefined);
+  const [jokePreference, setJokePreference] = useState<JokePreference | null>(null);
+  const [sampleJoke, setSampleJoke] = useState<string | null>(null);
 
   useEffect(() => {
     if (jokePreference) {
       (jokePreference === 'dad' ? fetchDadJoke : fetchRandomJoke)().then(setSampleJoke);
     } else {
-      setSampleJoke(undefined);
+      setSampleJoke(null);
     }
   }, [jokePreference]);
 

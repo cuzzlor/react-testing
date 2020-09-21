@@ -1,4 +1,4 @@
-import { getByRole, render, wait } from '@testing-library/react';
+import { getByRole, render, wait, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { NameForm, NameFormData, NameFormProps } from './NameForm';
@@ -10,9 +10,22 @@ describe('NameForm', () => {
 
     const firstName = getByRole(getByTestId('firstName'), 'textbox');
     const lastName = getByRole(getByTestId('lastName'), 'textbox');
+    const jokePreferenceRandom = getByRole(getByTestId('jokePreferenceRandom'), 'radio');
+    const jokePreferenceDad = getByRole(getByTestId('jokePreferenceDad'), 'radio');
+    const likeStuffYes = getByTestId('likeStuffYes');
+    const likeStuffNo = getByTestId('likeStuffNo');
     const submit = getByTestId('submit');
 
-    return { getByTestId, firstName, lastName, submit };
+    return {
+      getByTestId,
+      firstName,
+      lastName,
+      jokePreferenceRandom,
+      jokePreferenceDad,
+      likeStuffYes,
+      likeStuffNo,
+      submit,
+    };
   };
 
   test('displays data', () => {
@@ -25,15 +38,16 @@ describe('NameForm', () => {
 
   test('returns form data supplied through props', async () => {
     const submitHandler = jest.fn();
-    const data: NameFormData = { firstName: 'John', lastName: 'Smith' };
+    const data: NameFormData = { firstName: 'John', lastName: 'Smith', jokePreference: 'dad', likeStuff: 'no' };
 
     const { submit } = arrange({
-      firstName: data.firstName,
-      lastName: data.lastName,
+      ...data,
       onSubmit: submitHandler,
     });
 
-    userEvent.click(submit);
+    act(() => {
+      userEvent.click(submit);
+    });
 
     await wait(() => expect(submitHandler).toBeCalledTimes(1));
     expect(submitHandler.mock.calls[0][0]).toEqual(data);
@@ -41,17 +55,19 @@ describe('NameForm', () => {
 
   test('accepts and returns form input', async () => {
     const submitHandler = jest.fn();
-    const data = { firstName: 'John', lastName: 'Smith' };
+    const data = { firstName: 'John', lastName: 'Smith', jokePreference: 'dad', likeStuff: 'no' };
 
-    const { firstName, lastName, submit } = arrange({
-      firstName: data.firstName,
-      lastName: data.lastName,
+    const { firstName, lastName, jokePreferenceDad, likeStuffNo, submit } = arrange({
       onSubmit: submitHandler,
     });
 
-    userEvent.type(firstName, data.firstName);
-    userEvent.type(lastName, data.lastName);
-    userEvent.click(submit);
+    act(() => {
+      userEvent.type(firstName, data.firstName);
+      userEvent.type(lastName, data.lastName);
+      userEvent.click(jokePreferenceDad);
+      userEvent.click(likeStuffNo);
+      userEvent.click(submit);
+    });
 
     await wait(() => expect(submitHandler).toBeCalledTimes(1));
     expect(submitHandler.mock.calls[0][0]).toEqual(data);
@@ -69,10 +85,9 @@ describe('NameForm', () => {
     // enter only first name, not last name
     userEvent.type(firstName, firstNameText);
 
-    // first name should be filled, last name empty, submit button disabled
+    // first name should be filled, last name empty
     await wait(() => expect(firstName).toHaveProperty('value', firstNameText));
     expect(lastName).toBeEmpty();
-    expect(submit).toBeDisabled();
 
     // click of disabled submit button should do nothing
     userEvent.click(submit);

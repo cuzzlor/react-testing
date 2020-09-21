@@ -29,6 +29,7 @@ Filled.args = {
   firstName: 'Kid',
   lastName: 'Junior',
   jokePreference: 'random',
+  likeStuff: 'yes',
 };
 
 export const FilledDad = Template.bind({});
@@ -37,4 +38,5 @@ FilledDad.args = {
   firstName: 'Old',
   lastName: 'McDonald',
   jokePreference: 'dad',
+  likeStuff: 'no',
 };
