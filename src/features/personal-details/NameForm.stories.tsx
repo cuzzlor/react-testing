@@ -2,6 +2,7 @@ import React from 'react';
 import { NameForm, NameFormProps, NameFormData } from './NameForm';
 import { Meta, Story } from '@storybook/react/types-6-0';
 import { Container } from '@material-ui/core';
+import { top100Films } from './films';
 
 export default {
   title: 'NameForm',
@@ -30,6 +31,7 @@ Filled.args = {
   lastName: 'Junior',
   jokePreference: 'random',
   likeStuff: 'yes',
+  favouriteFilm: top100Films[1],
 };
 
 export const FilledDad = Template.bind({});
@@ -39,4 +41,5 @@ FilledDad.args = {
   lastName: 'McDonald',
   jokePreference: 'dad',
   likeStuff: 'no',
+  favouriteFilm: top100Films[9],
 };

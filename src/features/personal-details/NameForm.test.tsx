@@ -1,6 +1,7 @@
-import { getByRole, render, wait, act } from '@testing-library/react';
+import { getByRole, render, wait, act, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
+import { top100Films } from './films';
 import { NameForm, NameFormData, NameFormProps } from './NameForm';
 
 describe('NameForm', () => {
@@ -14,6 +15,8 @@ describe('NameForm', () => {
     const jokePreferenceDad = getByRole(getByTestId('jokePreferenceDad'), 'radio');
     const likeStuffYes = getByTestId('likeStuffYes');
     const likeStuffNo = getByTestId('likeStuffNo');
+    const favouriteFilmAutocomplete = getByRole(getByTestId('favouriteFilmAutocomplete'), 'textbox');
+    const favouriteFilmTextbox = getByRole(getByTestId('favouriteFilmTextbox'), 'textbox');
     const submit = getByTestId('submit');
 
     return {
@@ -24,21 +27,38 @@ describe('NameForm', () => {
       jokePreferenceDad,
       likeStuffYes,
       likeStuffNo,
+      favouriteFilmAutocomplete,
+      favouriteFilmTextbox,
       submit,
     };
   };
 
   test('displays data', () => {
-    const data: NameFormData = { firstName: 'Sam', lastName: 'Curry' };
-    const { firstName, lastName } = arrange({ ...data });
+    const data: NameFormData = {
+      firstName: 'Sam',
+      lastName: 'Curry',
+      jokePreference: 'dad',
+      likeStuff: 'yes',
+      favouriteFilm: top100Films[1],
+    };
+    const { firstName, lastName, jokePreferenceDad, likeStuffYes, favouriteFilmTextbox } = arrange({ ...data });
 
     expect(firstName).toHaveProperty('value', data.firstName);
     expect(lastName).toHaveProperty('value', data.lastName);
+    expect(jokePreferenceDad).toHaveProperty('checked', true);
+    expect(likeStuffYes).toHaveClass('Mui-selected');
+    expect(favouriteFilmTextbox).toHaveProperty('value', data.favouriteFilm);
   });
 
   test('returns form data supplied through props', async () => {
     const submitHandler = jest.fn();
-    const data: NameFormData = { firstName: 'John', lastName: 'Smith', jokePreference: 'dad', likeStuff: 'no' };
+    const data: NameFormData = {
+      firstName: 'John',
+      lastName: 'Smith',
+      jokePreference: 'dad',
+      likeStuff: 'no',
+      favouriteFilm: top100Films[1],
+    };
 
     const { submit } = arrange({
       ...data,
@@ -55,19 +75,34 @@ describe('NameForm', () => {
 
   test('accepts and returns form input', async () => {
     const submitHandler = jest.fn();
-    const data = { firstName: 'John', lastName: 'Smith', jokePreference: 'dad', likeStuff: 'no' };
+    const data = {
+      firstName: 'John',
+      lastName: 'Smith',
+      jokePreference: 'dad',
+      likeStuff: 'no',
+      favouriteFilm: top100Films[1],
+    };
 
-    const { firstName, lastName, jokePreferenceDad, likeStuffNo, submit } = arrange({
+    const {
+      firstName,
+      lastName,
+      jokePreferenceDad,
+      likeStuffNo,
+      favouriteFilmAutocomplete,
+      favouriteFilmTextbox,
+      submit,
+    } = arrange({
       onSubmit: submitHandler,
     });
 
-    act(() => {
-      userEvent.type(firstName, data.firstName);
-      userEvent.type(lastName, data.lastName);
-      userEvent.click(jokePreferenceDad);
-      userEvent.click(likeStuffNo);
-      userEvent.click(submit);
-    });
+    userEvent.type(firstName, data.firstName);
+    userEvent.type(lastName, data.lastName);
+    userEvent.click(jokePreferenceDad);
+    userEvent.click(likeStuffNo);
+    userEvent.type(favouriteFilmTextbox, data.favouriteFilm);
+    fireEvent.keyDown(favouriteFilmAutocomplete, { key: 'ArrowDown', code: 'ArrowDown' });
+    fireEvent.keyDown(favouriteFilmAutocomplete, { key: 'Enter', code: 'Enter' });
+    userEvent.click(submit);
 
     await wait(() => expect(submitHandler).toBeCalledTimes(1));
     expect(submitHandler.mock.calls[0][0]).toEqual(data);

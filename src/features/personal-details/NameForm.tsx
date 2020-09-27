@@ -9,16 +9,19 @@ import {
   RadioGroup,
   TextField,
 } from '@material-ui/core';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { top100Films } from './films';
 
 export type JokePreference = 'dad' | 'random';
 export type YesNo = 'yes' | 'no';
 export interface NameFormData {
   firstName?: string;
   lastName?: string;
+  favouriteFilm?: string;
   jokePreference?: JokePreference | null;
   likeStuff?: YesNo | null;
 }
@@ -34,6 +37,7 @@ export type NameFormProps = NameFormData & NameFormHandlers & NameFormReferenceD
 export const NameForm: React.FC<NameFormProps> = ({
   firstName = '',
   lastName = '',
+  favouriteFilm = null,
   jokePreference = null,
   sampleJoke = null,
   likeStuff = null,
@@ -133,6 +137,34 @@ export const NameForm: React.FC<NameFormProps> = ({
             />
             <FormHelperText>{errors.likeStuff?.message || ''}</FormHelperText>
           </FormControl>
+        </Grid>
+        <Grid item xs={12}>
+          <Controller
+            control={control}
+            name="favouriteFilm"
+            defaultValue={favouriteFilm}
+            rules={{ required: { value: true, message: 'Favourite film is required' } }}
+            render={(props) => (
+              <Autocomplete
+                {...props}
+                aria-label="favouriteFilm"
+                data-testid="favouriteFilmAutocomplete"
+                options={top100Films}
+                fullWidth
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Favourite Film"
+                    variant="outlined"
+                    data-testid="favouriteFilmTextbox"
+                    error={!!errors.favouriteFilm}
+                    helperText={errors.favouriteFilm?.message || ''}
+                  />
+                )}
+                onChange={(_, data) => props.onChange(data)}
+              />
+            )}
+          />
         </Grid>
         <Grid item xs={12} container justify="flex-end">
           <Button type="submit" variant="contained" data-testid="submit">
