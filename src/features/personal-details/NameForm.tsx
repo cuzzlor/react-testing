@@ -9,11 +9,11 @@ import {
   RadioGroup,
   TextField,
 } from '@material-ui/core';
-import Autocomplete from '@material-ui/lab/Autocomplete';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { FavouriteFilmAutocomplete } from './FavouriteFilmAutocomplete';
 import { top100Films } from './films';
 
 export type JokePreference = 'dad' | 'random';
@@ -145,11 +145,11 @@ export const NameForm: React.FC<NameFormProps> = ({
             defaultValue={favouriteFilm}
             rules={{ required: { value: true, message: 'Favourite film is required' } }}
             render={(props) => (
-              <Autocomplete
+              <FavouriteFilmAutocomplete
                 {...props}
                 aria-label="favouriteFilm"
                 data-testid="favouriteFilmAutocomplete"
-                options={top100Films}
+                films={top100Films}
                 fullWidth
                 renderInput={(params) => (
                   <TextField
