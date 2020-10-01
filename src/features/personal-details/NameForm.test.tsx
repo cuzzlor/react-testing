@@ -17,6 +17,7 @@ describe('NameForm', () => {
     const likeStuffNo = getByTestId('likeStuffNo');
     const favouriteFilmAutocomplete = getByRole(getByTestId('favouriteFilmAutocomplete'), 'textbox');
     const favouriteFilmTextbox = getByRole(getByTestId('favouriteFilmTextbox'), 'textbox');
+    const dateOfBirth = getByRole(getByTestId('dateOfBirth'), 'textbox');
     const submit = getByTestId('submit');
 
     return {
@@ -29,6 +30,7 @@ describe('NameForm', () => {
       likeStuffNo,
       favouriteFilmAutocomplete,
       favouriteFilmTextbox,
+      dateOfBirth,
       submit,
     };
   };
@@ -40,14 +42,18 @@ describe('NameForm', () => {
       jokePreference: 'dad',
       likeStuff: 'yes',
       favouriteFilm: top100Films[1],
+      dateOfBirth: new Date('2000-12-12'),
     };
-    const { firstName, lastName, jokePreferenceDad, likeStuffYes, favouriteFilmTextbox } = arrange({ ...data });
+    const { firstName, lastName, jokePreferenceDad, likeStuffYes, favouriteFilmTextbox, dateOfBirth } = arrange({
+      ...data,
+    });
 
     expect(firstName).toHaveProperty('value', data.firstName);
     expect(lastName).toHaveProperty('value', data.lastName);
     expect(jokePreferenceDad).toHaveProperty('checked', true);
     expect(likeStuffYes).toHaveClass('Mui-selected');
     expect(favouriteFilmTextbox).toHaveProperty('value', data.favouriteFilm);
+    expect(dateOfBirth).toHaveProperty('value', '12/12/2000');
   });
 
   test('returns form data supplied through props', async () => {
@@ -58,6 +64,7 @@ describe('NameForm', () => {
       jokePreference: 'dad',
       likeStuff: 'no',
       favouriteFilm: top100Films[1],
+      dateOfBirth: new Date('2000-12-12'),
     };
 
     const { submit } = arrange({
@@ -81,31 +88,27 @@ describe('NameForm', () => {
       jokePreference: 'dad',
       likeStuff: 'no',
       favouriteFilm: top100Films[1],
+      dateOfBirth: new Date('2000-12-12'),
     };
 
-    const {
-      firstName,
-      lastName,
-      jokePreferenceDad,
-      likeStuffNo,
-      favouriteFilmAutocomplete,
-      favouriteFilmTextbox,
-      submit,
-    } = arrange({
+    const elements = arrange({
       onSubmit: submitHandler,
     });
 
-    userEvent.type(firstName, data.firstName);
-    userEvent.type(lastName, data.lastName);
-    userEvent.click(jokePreferenceDad);
-    userEvent.click(likeStuffNo);
-    userEvent.type(favouriteFilmTextbox, data.favouriteFilm);
-    fireEvent.keyDown(favouriteFilmAutocomplete, { key: 'ArrowDown', code: 'ArrowDown' });
-    fireEvent.keyDown(favouriteFilmAutocomplete, { key: 'Enter', code: 'Enter' });
-    userEvent.click(submit);
+    userEvent.type(elements.firstName, data.firstName);
+    userEvent.type(elements.lastName, data.lastName);
+    userEvent.click(elements.jokePreferenceDad);
+    userEvent.click(elements.likeStuffNo);
+    userEvent.type(elements.favouriteFilmTextbox, data.favouriteFilm);
+    fireEvent.keyDown(elements.favouriteFilmAutocomplete, { key: 'ArrowDown', code: 'ArrowDown' });
+    fireEvent.keyDown(elements.favouriteFilmAutocomplete, { key: 'Enter', code: 'Enter' });
+    userEvent.type(elements.dateOfBirth, '12/12/2000');
+    userEvent.click(elements.submit);
 
     await wait(() => expect(submitHandler).toBeCalledTimes(1));
-    expect(submitHandler.mock.calls[0][0]).toEqual(data);
+    const { dateOfBirth, ...rest } = submitHandler.mock.calls[0][0] as NameFormData;
+    expect(data).toMatchObject(rest);
+    expect(dateOfBirth?.toDateString()).toEqual(data.dateOfBirth.toDateString());
   });
 
   test('prevents partial submission', async () => {

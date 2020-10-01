@@ -1,3 +1,4 @@
+import DateFnsUtils from '@date-io/date-fns';
 import {
   Button,
   FormControl,
@@ -12,8 +13,14 @@ import {
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+import { KeyboardDatePicker } from '@material-ui/pickers/DatePicker';
+import MuiPickersUtilsProvider from '@material-ui/pickers/MuiPickersUtilsProvider';
+import isAfter from 'date-fns/isAfter';
+import isBefore from 'date-fns/isBefore';
+import isValid from 'date-fns/isValid';
+import subYears from 'date-fns/subYears';
 import React from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useForm, Validate } from 'react-hook-form';
 import { top100Films } from './films';
 
 export type JokePreference = 'dad' | 'random';
@@ -21,6 +28,7 @@ export type YesNo = 'yes' | 'no';
 export interface NameFormData {
   firstName?: string;
   lastName?: string;
+  dateOfBirth?: Date | null;
   favouriteFilm?: string;
   jokePreference?: JokePreference | null;
   likeStuff?: YesNo | null;
@@ -34,9 +42,19 @@ export interface NameFormReferenceData {
 }
 export type NameFormProps = NameFormData & NameFormHandlers & NameFormReferenceData;
 
+const dobMin = subYears(new Date(), 100);
+const dobMax = subYears(new Date(), 16);
+const dobOutOfRangeMsg = 'Please enter a rider age between 16 and 100';
+const validateDob: Record<string, Validate> = {
+  valid: (value) => isValid(value) || 'Date of birth is invalid',
+  min: (value) => isBefore(dobMin, value) || dobOutOfRangeMsg,
+  max: (value) => isAfter(dobMax, value) || dobOutOfRangeMsg,
+};
+
 export const NameForm: React.FC<NameFormProps> = ({
   firstName = '',
   lastName = '',
+  dateOfBirth = null,
   favouriteFilm = null,
   jokePreference = null,
   sampleJoke = null,
@@ -165,6 +183,36 @@ export const NameForm: React.FC<NameFormProps> = ({
               />
             )}
           />
+        </Grid>
+        <Grid item xs={12}>
+          <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <Controller
+              control={control}
+              name="dateOfBirth"
+              defaultValue={dateOfBirth}
+              rules={{
+                required: {
+                  value: true,
+                  message: 'Date of birth is required',
+                },
+                validate: validateDob,
+              }}
+              render={(args) => (
+                <KeyboardDatePicker
+                  {...args}
+                  fullWidth
+                  autoOk
+                  inputVariant="outlined"
+                  variant="inline"
+                  format="dd/MM/yyyy"
+                  placeholder="dd/mm/yyyy"
+                  error={!!errors.dateOfBirth}
+                  helperText={errors.dateOfBirth?.message}
+                  data-testid="dateOfBirth"
+                />
+              )}
+            />
+          </MuiPickersUtilsProvider>
         </Grid>
         <Grid item xs={12} container justify="flex-end">
           <Button type="submit" variant="contained" data-testid="submit">
