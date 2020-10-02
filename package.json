@@ -28,6 +28,7 @@
     "react-hook-form": "^6.7.1",
     "react-scripts": "3.4.3",
     "react-test-renderer": "^16.13.1",
+    "recoil": "0.0.13",
     "ts-jest": "^26.3.0",
     "typescript": "^3.7.5"
   },

@@ -21,6 +21,7 @@ import isValid from 'date-fns/isValid';
 import subYears from 'date-fns/subYears';
 import React from 'react';
 import { Controller, useForm, Validate } from 'react-hook-form';
+import { Loadable } from 'recoil';
 import { top100Films } from './films';
 
 export type JokePreference = 'dad' | 'random';
@@ -38,7 +39,7 @@ export interface NameFormHandlers {
   onJokePreferenceChanged?: (value: JokePreference | null) => void | Promise<void>;
 }
 export interface NameFormReferenceData {
-  sampleJoke?: string | null;
+  sampleJoke?: Loadable<string | null>;
 }
 export type NameFormProps = NameFormData & NameFormHandlers & NameFormReferenceData;
 
@@ -131,7 +132,7 @@ export const NameForm: React.FC<NameFormProps> = ({
           </FormControl>
         </Grid>
         <Grid item xs={12}>
-          {sampleJoke || ''}
+          {sampleJoke && sampleJoke.state === 'hasValue' ? sampleJoke.contents : ''}
         </Grid>
         <Grid item xs={12}>
           <FormControl component="fieldset" error={!!errors.likeStuff}>

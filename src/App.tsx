@@ -1,9 +1,10 @@
 import { Container, CssBaseline, Typography } from '@material-ui/core';
 import { createMuiTheme, MuiThemeProvider, responsiveFontSizes } from '@material-ui/core/styles';
 import React from 'react';
+import { RecoilRoot } from 'recoil';
 import { NameFormPage } from './features/personal-details/NameFormPage';
 
-const darkTheme = responsiveFontSizes(
+const theme = responsiveFontSizes(
   createMuiTheme({
     palette: { type: 'light' },
   })
@@ -11,14 +12,16 @@ const darkTheme = responsiveFontSizes(
 
 function App() {
   return (
-    <MuiThemeProvider theme={darkTheme}>
-      <CssBaseline />
-      <Container maxWidth="sm">
-        <Typography variant="h2" align="center">
-          Welcome
-        </Typography>
-        <NameFormPage />
-      </Container>
+    <MuiThemeProvider theme={theme}>
+      <RecoilRoot>
+        <CssBaseline />
+        <Container maxWidth="sm">
+          <Typography variant="h2" align="center">
+            Welcome
+          </Typography>
+          <NameFormPage />
+        </Container>
+      </RecoilRoot>
     </MuiThemeProvider>
   );
 }
