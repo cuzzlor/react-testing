@@ -7,7 +7,7 @@ import { NameForm, NameFormData, NameFormProps } from './NameForm';
 describe('NameForm', () => {
   // render NameForm with props and return elements to test
   const arrange = (props: NameFormProps) => {
-    const { getByTestId } = render(<NameForm {...props} />);
+    const { getByTestId } = render(<NameForm {...props} films={{ state: 'hasValue', contents: top100Films }} />);
 
     const firstName = getByRole(getByTestId('firstName'), 'textbox');
     const lastName = getByRole(getByTestId('lastName'), 'textbox');

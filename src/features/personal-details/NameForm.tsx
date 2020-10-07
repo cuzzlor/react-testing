@@ -22,7 +22,6 @@ import subYears from 'date-fns/subYears';
 import React from 'react';
 import { Controller, useForm, Validate } from 'react-hook-form';
 import { Loadable } from 'recoil';
-import { top100Films } from './films';
 
 export type JokePreference = 'dad' | 'random';
 export type YesNo = 'yes' | 'no';
@@ -40,6 +39,7 @@ export interface NameFormHandlers {
 }
 export interface NameFormReferenceData {
   sampleJoke?: Loadable<string | null>;
+  films?: Loadable<string[]>;
 }
 export type NameFormProps = NameFormData & NameFormHandlers & NameFormReferenceData;
 
@@ -60,7 +60,10 @@ export const NameForm: React.FC<NameFormProps> = ({
   jokePreference = null,
   sampleJoke = null,
   likeStuff = null,
-
+  films = {
+    state: 'hasValue',
+    contents: [],
+  },
   onSubmit = () => void 0,
   onJokePreferenceChanged = () => void 0,
 }) => {
@@ -168,12 +171,13 @@ export const NameForm: React.FC<NameFormProps> = ({
                 {...props}
                 aria-label="favouriteFilm"
                 data-testid="favouriteFilmAutocomplete"
-                options={top100Films}
+                options={films.state === 'hasValue' ? films.contents : []}
+                disabled={films.state !== 'hasValue'}
                 fullWidth
                 renderInput={(params) => (
                   <TextField
                     {...params}
-                    label="Favourite Film"
+                    label={films.state === 'loading' ? 'loading...' : 'Favourite Film'}
                     variant="outlined"
                     data-testid="favouriteFilmTextbox"
                     error={!!errors.favouriteFilm}
