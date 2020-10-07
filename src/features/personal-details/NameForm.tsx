@@ -29,6 +29,7 @@ export interface NameFormData {
   firstName?: string;
   lastName?: string;
   dateOfBirth?: Date | null;
+  email?: string;
   favouriteFilm?: string;
   jokePreference?: JokePreference | null;
   likeStuff?: YesNo | null;
@@ -52,10 +53,13 @@ const validateDob: Record<string, Validate> = {
   max: (value) => isAfter(dobMax, value) || dobOutOfRangeMsg,
 };
 
+const EmailValidationPattern = /^(?!\.)(([-a-z0-9_]|(?<!\.)\.)*)(?<!\.)@[a-z0-9][\w.-]*[a-z0-9]\.[a-z][a-z.]*[a-z]$/;
+
 export const NameForm: React.FC<NameFormProps> = ({
   firstName = '',
   lastName = '',
   dateOfBirth = null,
+  email = '',
   favouriteFilm = null,
   jokePreference = null,
   sampleJoke = null,
@@ -68,7 +72,8 @@ export const NameForm: React.FC<NameFormProps> = ({
   onJokePreferenceChanged = () => void 0,
 }) => {
   const { register, handleSubmit, errors, control } = useForm<NameFormData>({
-    mode: 'all',
+    mode: 'onSubmit',
+    reValidateMode: 'onChange',
   });
 
   return (
@@ -101,6 +106,50 @@ export const NameForm: React.FC<NameFormProps> = ({
             helperText={errors.lastName?.message || ''}
             data-testid="lastName"
           />
+        </Grid>
+        <Grid item xs={6}>
+          <TextField
+            name="email"
+            label="Email"
+            fullWidth
+            defaultValue={email}
+            inputRef={register({
+              required: { value: true, message: 'Email is required' },
+              pattern: { value: EmailValidationPattern, message: 'Email is invalid' },
+            })}
+            error={!!errors.email}
+            helperText={errors.email?.message || ''}
+            data-testid="email"
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <Controller
+              control={control}
+              name="dateOfBirth"
+              defaultValue={dateOfBirth}
+              rules={{
+                required: {
+                  value: true,
+                  message: 'Date of birth is required',
+                },
+                validate: validateDob,
+              }}
+              render={(args) => (
+                <KeyboardDatePicker
+                  {...args}
+                  fullWidth
+                  autoOk
+                  format="dd/MM/yyyy"
+                  placeholder="dd/mm/yyyy"
+                  label="Date of Birth"
+                  error={!!errors.dateOfBirth}
+                  helperText={errors.dateOfBirth?.message}
+                  data-testid="dateOfBirth"
+                />
+              )}
+            />
+          </MuiPickersUtilsProvider>
         </Grid>
         <Grid item xs={12}>
           <FormControl component="fieldset" error={!!errors.jokePreference}>
@@ -188,36 +237,6 @@ export const NameForm: React.FC<NameFormProps> = ({
               />
             )}
           />
-        </Grid>
-        <Grid item xs={12}>
-          <MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <Controller
-              control={control}
-              name="dateOfBirth"
-              defaultValue={dateOfBirth}
-              rules={{
-                required: {
-                  value: true,
-                  message: 'Date of birth is required',
-                },
-                validate: validateDob,
-              }}
-              render={(args) => (
-                <KeyboardDatePicker
-                  {...args}
-                  fullWidth
-                  autoOk
-                  inputVariant="outlined"
-                  variant="inline"
-                  format="dd/MM/yyyy"
-                  placeholder="dd/mm/yyyy"
-                  error={!!errors.dateOfBirth}
-                  helperText={errors.dateOfBirth?.message}
-                  data-testid="dateOfBirth"
-                />
-              )}
-            />
-          </MuiPickersUtilsProvider>
         </Grid>
         <Grid item xs={12} container justify="flex-end">
           <Button type="submit" variant="contained" data-testid="submit">

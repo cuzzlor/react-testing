@@ -11,26 +11,28 @@ describe('NameForm', () => {
 
     const firstName = getByRole(getByTestId('firstName'), 'textbox');
     const lastName = getByRole(getByTestId('lastName'), 'textbox');
+    const email = getByRole(getByTestId('email'), 'textbox');
+    const dateOfBirth = getByRole(getByTestId('dateOfBirth'), 'textbox');
     const jokePreferenceRandom = getByRole(getByTestId('jokePreferenceRandom'), 'radio');
     const jokePreferenceDad = getByRole(getByTestId('jokePreferenceDad'), 'radio');
     const likeStuffYes = getByTestId('likeStuffYes');
     const likeStuffNo = getByTestId('likeStuffNo');
     const favouriteFilmAutocomplete = getByRole(getByTestId('favouriteFilmAutocomplete'), 'textbox');
     const favouriteFilmTextbox = getByRole(getByTestId('favouriteFilmTextbox'), 'textbox');
-    const dateOfBirth = getByRole(getByTestId('dateOfBirth'), 'textbox');
     const submit = getByTestId('submit');
 
     return {
       getByTestId,
       firstName,
       lastName,
+      email,
+      dateOfBirth,
       jokePreferenceRandom,
       jokePreferenceDad,
       likeStuffYes,
       likeStuffNo,
       favouriteFilmAutocomplete,
       favouriteFilmTextbox,
-      dateOfBirth,
       submit,
     };
   };
@@ -39,21 +41,23 @@ describe('NameForm', () => {
     const data: NameFormData = {
       firstName: 'Sam',
       lastName: 'Curry',
+      email: 'sam.curry@abc.net',
+      dateOfBirth: new Date('2000-12-12'),
       jokePreference: 'dad',
       likeStuff: 'yes',
       favouriteFilm: top100Films[1],
-      dateOfBirth: new Date('2000-12-12'),
     };
-    const { firstName, lastName, jokePreferenceDad, likeStuffYes, favouriteFilmTextbox, dateOfBirth } = arrange({
+    const { firstName, lastName, email, dateOfBirth, jokePreferenceDad, likeStuffYes, favouriteFilmTextbox } = arrange({
       ...data,
     });
 
     expect(firstName).toHaveProperty('value', data.firstName);
     expect(lastName).toHaveProperty('value', data.lastName);
+    expect(email).toHaveProperty('value', data.email);
+    expect(dateOfBirth).toHaveProperty('value', '12/12/2000');
     expect(jokePreferenceDad).toHaveProperty('checked', true);
     expect(likeStuffYes).toHaveClass('Mui-selected');
     expect(favouriteFilmTextbox).toHaveProperty('value', data.favouriteFilm);
-    expect(dateOfBirth).toHaveProperty('value', '12/12/2000');
   });
 
   test('returns form data supplied through props', async () => {
@@ -61,10 +65,11 @@ describe('NameForm', () => {
     const data: NameFormData = {
       firstName: 'John',
       lastName: 'Smith',
+      email: 'sam.curry@abc.net',
+      dateOfBirth: new Date('2000-12-12'),
       jokePreference: 'dad',
       likeStuff: 'no',
       favouriteFilm: top100Films[1],
-      dateOfBirth: new Date('2000-12-12'),
     };
 
     const { submit } = arrange({
@@ -85,10 +90,11 @@ describe('NameForm', () => {
     const data = {
       firstName: 'John',
       lastName: 'Smith',
+      email: 'sam.curry@abc.net',
+      dateOfBirth: new Date('2000-12-12'),
       jokePreference: 'dad',
       likeStuff: 'no',
       favouriteFilm: top100Films[1],
-      dateOfBirth: new Date('2000-12-12'),
     };
 
     const elements = arrange({
@@ -97,12 +103,13 @@ describe('NameForm', () => {
 
     userEvent.type(elements.firstName, data.firstName);
     userEvent.type(elements.lastName, data.lastName);
+    userEvent.type(elements.email, data.email);
+    userEvent.type(elements.dateOfBirth, '12/12/2000');
     userEvent.click(elements.jokePreferenceDad);
     userEvent.click(elements.likeStuffNo);
     userEvent.type(elements.favouriteFilmTextbox, data.favouriteFilm);
     fireEvent.keyDown(elements.favouriteFilmAutocomplete, { key: 'ArrowDown', code: 'ArrowDown' });
     fireEvent.keyDown(elements.favouriteFilmAutocomplete, { key: 'Enter', code: 'Enter' });
-    userEvent.type(elements.dateOfBirth, '12/12/2000');
     userEvent.click(elements.submit);
 
     await wait(() => expect(submitHandler).toBeCalledTimes(1));

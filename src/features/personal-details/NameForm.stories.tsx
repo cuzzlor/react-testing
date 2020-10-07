@@ -29,10 +29,11 @@ Filled.args = {
   onSubmit,
   firstName: 'Kid',
   lastName: 'Junior',
+  email: 'kid.junior@school.net',
+  dateOfBirth: new Date('2000-06-24'),
   jokePreference: 'random',
   likeStuff: 'yes',
   favouriteFilm: top100Films[1],
-  dateOfBirth: new Date('2000-06-24'),
 };
 
 export const FilledDad = Template.bind({});
@@ -40,8 +41,9 @@ FilledDad.args = {
   onSubmit,
   firstName: 'Old',
   lastName: 'McDonald',
+  email: 'old.mcdonald@yahoo.com',
+  dateOfBirth: new Date('1970-02-28'),
   jokePreference: 'dad',
   likeStuff: 'no',
   favouriteFilm: top100Films[9],
-  dateOfBirth: new Date('1970-02-28'),
 };
