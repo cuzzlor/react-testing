@@ -22,6 +22,7 @@ import subYears from 'date-fns/subYears';
 import React from 'react';
 import { Controller, useForm, Validate } from 'react-hook-form';
 import { Loadable } from 'recoil';
+import { NumberFormatCustom } from '../../components/NumberFormatCustom';
 
 export type JokePreference = 'dad' | 'random';
 export type YesNo = 'yes' | 'no';
@@ -33,6 +34,7 @@ export interface NameFormData {
   favouriteFilm?: string;
   jokePreference?: JokePreference | null;
   likeStuff?: YesNo | null;
+  amount?: string;
 }
 export interface NameFormHandlers {
   onSubmit?: (data: NameFormData) => void | Promise<void>;
@@ -64,6 +66,7 @@ export const NameForm: React.FC<NameFormProps> = ({
   jokePreference = null,
   sampleJoke = null,
   likeStuff = null,
+  amount = '',
   films = {
     state: 'hasValue',
     contents: [],
@@ -234,6 +237,27 @@ export const NameForm: React.FC<NameFormProps> = ({
                   />
                 )}
                 onChange={(_, data) => props.onChange(data)}
+              />
+            )}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <Controller
+            control={control}
+            name="amount"
+            defaultValue={amount}
+            rules={{ required: { value: true, message: 'Amount is required' } }}
+            render={(props) => (
+              <TextField
+                {...props}
+                fullWidth
+                error={!!errors.amount}
+                helperText={errors.amount?.message || ''}
+                data-testid="amount"
+                InputProps={{
+                  inputComponent: NumberFormatCustom as any,
+                }}
+                onChange={(e) => props.onChange(e.target.value)}
               />
             )}
           />
