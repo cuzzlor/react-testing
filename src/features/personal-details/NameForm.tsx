@@ -34,7 +34,7 @@ export interface NameFormData {
   favouriteFilm?: string;
   jokePreference?: JokePreference | null;
   likeStuff?: YesNo | null;
-  amount?: string;
+  amount?: number | null;
 }
 export interface NameFormHandlers {
   onSubmit?: (data: NameFormData) => void | Promise<void>;
@@ -66,7 +66,7 @@ export const NameForm: React.FC<NameFormProps> = ({
   jokePreference = null,
   sampleJoke = null,
   likeStuff = null,
-  amount = '',
+  amount = null,
   films = {
     state: 'hasValue',
     contents: [],
@@ -110,7 +110,7 @@ export const NameForm: React.FC<NameFormProps> = ({
             data-testid="lastName"
           />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12}>
           <TextField
             name="email"
             label="Email"
@@ -153,6 +153,28 @@ export const NameForm: React.FC<NameFormProps> = ({
               )}
             />
           </MuiPickersUtilsProvider>
+        </Grid>
+        <Grid item xs={6}>
+          <Controller
+            control={control}
+            name="amount"
+            defaultValue={amount}
+            rules={{ required: { value: true, message: 'Amount is required' } }}
+            render={(props) => (
+              <TextField
+                {...props}
+                fullWidth
+                error={!!errors.amount}
+                helperText={errors.amount?.message || ''}
+                label="Amount"
+                data-testid="amount"
+                InputProps={{
+                  inputComponent: NumberFormatCustom as any,
+                }}
+                onChange={(e) => props.onChange(e.target.value)}
+              />
+            )}
+          />
         </Grid>
         <Grid item xs={12}>
           <FormControl component="fieldset" error={!!errors.jokePreference}>
@@ -237,27 +259,6 @@ export const NameForm: React.FC<NameFormProps> = ({
                   />
                 )}
                 onChange={(_, data) => props.onChange(data)}
-              />
-            )}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <Controller
-            control={control}
-            name="amount"
-            defaultValue={amount}
-            rules={{ required: { value: true, message: 'Amount is required' } }}
-            render={(props) => (
-              <TextField
-                {...props}
-                fullWidth
-                error={!!errors.amount}
-                helperText={errors.amount?.message || ''}
-                data-testid="amount"
-                InputProps={{
-                  inputComponent: NumberFormatCustom as any,
-                }}
-                onChange={(e) => props.onChange(e.target.value)}
               />
             )}
           />

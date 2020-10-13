@@ -33,7 +33,9 @@ Filled.args = {
   dateOfBirth: new Date('2000-06-24'),
   jokePreference: 'random',
   likeStuff: 'yes',
+  amount: 500,
   favouriteFilm: top100Films[1],
+  films: { state: 'hasValue', contents: top100Films },
 };
 
 export const FilledDad = Template.bind({});
@@ -45,5 +47,7 @@ FilledDad.args = {
   dateOfBirth: new Date('1970-02-28'),
   jokePreference: 'dad',
   likeStuff: 'no',
+  amount: 100000,
   favouriteFilm: top100Films[9],
+  films: { state: 'hasValue', contents: top100Films },
 };
