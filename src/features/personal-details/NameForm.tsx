@@ -74,8 +74,8 @@ export const NameForm: React.FC<NameFormProps> = ({
   onSubmit = () => void 0,
   onJokePreferenceChanged = () => void 0,
 }) => {
-  const { register, handleSubmit, errors, control } = useForm<NameFormData>({
-    mode: 'onSubmit',
+  const { register, handleSubmit, errors, control, formState } = useForm<NameFormData>({
+    mode: 'onTouched',
     reValidateMode: 'onChange',
   });
 
@@ -264,7 +264,7 @@ export const NameForm: React.FC<NameFormProps> = ({
           />
         </Grid>
         <Grid item xs={12} container justify="flex-end">
-          <Button type="submit" variant="contained" data-testid="submit">
+          <Button type="submit" variant="contained" data-testid="submit" disabled={!formState.isValid}>
             Next
           </Button>
         </Grid>
