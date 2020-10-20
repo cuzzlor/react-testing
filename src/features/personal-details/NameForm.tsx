@@ -143,6 +143,8 @@ export const NameForm: React.FC<NameFormProps> = ({
                   {...args}
                   fullWidth
                   autoOk
+                  minDate={dobMin}
+                  maxDate={dobMax}
                   format="dd/MM/yyyy"
                   placeholder="dd/mm/yyyy"
                   label="Date of Birth"

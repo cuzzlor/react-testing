@@ -13,6 +13,7 @@ describe('NameForm', () => {
     const lastName = getByRole(getByTestId('lastName'), 'textbox');
     const email = getByRole(getByTestId('email'), 'textbox');
     const dateOfBirth = getByRole(getByTestId('dateOfBirth'), 'textbox');
+    const amount = getByRole(getByTestId('amount'), 'textbox');
     const jokePreferenceRandom = getByRole(getByTestId('jokePreferenceRandom'), 'radio');
     const jokePreferenceDad = getByRole(getByTestId('jokePreferenceDad'), 'radio');
     const likeStuffYes = getByTestId('likeStuffYes');
@@ -27,6 +28,7 @@ describe('NameForm', () => {
       lastName,
       email,
       dateOfBirth,
+      amount,
       jokePreferenceRandom,
       jokePreferenceDad,
       likeStuffYes,
@@ -43,17 +45,28 @@ describe('NameForm', () => {
       lastName: 'Curry',
       email: 'sam.curry@abc.net',
       dateOfBirth: new Date('2000-12-12'),
+      amount: 50,
       jokePreference: 'dad',
       likeStuff: 'yes',
       favouriteFilm: top100Films[1],
     };
-    const { firstName, lastName, email, dateOfBirth, jokePreferenceDad, likeStuffYes, favouriteFilmTextbox } = arrange({
+    const {
+      firstName,
+      lastName,
+      email,
+      dateOfBirth,
+      amount,
+      jokePreferenceDad,
+      likeStuffYes,
+      favouriteFilmTextbox,
+    } = arrange({
       ...data,
     });
 
     expect(firstName).toHaveProperty('value', data.firstName);
     expect(lastName).toHaveProperty('value', data.lastName);
     expect(email).toHaveProperty('value', data.email);
+    expect(amount).toHaveProperty('value', `$${data.amount}`);
     expect(dateOfBirth).toHaveProperty('value', '12/12/2000');
     expect(jokePreferenceDad).toHaveProperty('checked', true);
     expect(likeStuffYes).toHaveClass('Mui-selected');
@@ -67,6 +80,7 @@ describe('NameForm', () => {
       lastName: 'Smith',
       email: 'sam.curry@abc.net',
       dateOfBirth: new Date('2000-12-12'),
+      amount: 1000,
       jokePreference: 'dad',
       likeStuff: 'no',
       favouriteFilm: top100Films[1],
@@ -92,6 +106,7 @@ describe('NameForm', () => {
       lastName: 'Smith',
       email: 'sam.curry@abc.net',
       dateOfBirth: new Date('2000-12-12'),
+      amount: 3123,
       jokePreference: 'dad',
       likeStuff: 'no',
       favouriteFilm: top100Films[1],
@@ -105,6 +120,7 @@ describe('NameForm', () => {
     userEvent.type(elements.lastName, data.lastName);
     userEvent.type(elements.email, data.email);
     userEvent.type(elements.dateOfBirth, '12/12/2000');
+    await userEvent.type(elements.amount, data.amount.toString(), { delay: 1000 });
     userEvent.click(elements.jokePreferenceDad);
     userEvent.click(elements.likeStuffNo);
     userEvent.type(elements.favouriteFilmTextbox, data.favouriteFilm);
